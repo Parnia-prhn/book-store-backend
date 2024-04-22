@@ -1,15 +1,45 @@
-import fastify from "fastify";
+import fastify, {
+  FastifyInstance,
+  FastifyRequest,
+  FastifyReply,
+} from "fastify";
+import connectToDatabase from "./config/db";
+import bookRoutes from "./routes/books";
+import shoppingCartRoutes from "./routes/shoppingCart";
+import userRoutes from "./routes/users";
+import authRoutes from "./routes/auth";
 
-const server = fastify();
+const app: FastifyInstance = fastify();
 
-server.get("/ping", async (request, reply) => {
-  return "pong\n";
-});
+function requestLogger(
+  req: FastifyRequest,
+  reply: FastifyReply,
+  next: () => void
+) {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+}
 
-server.listen({ port: 8080 }, (err, address) => {
-  if (err) {
-    console.error(err);
+async function startApp() {
+  try {
+    const dbConnection = await connectToDatabase();
+    app.register(authRoutes);
+    app.register(bookRoutes);
+    app.register(shoppingCartRoutes);
+    app.register(userRoutes);
+
+    app.addHook("preHandler", requestLogger);
+    app.listen(3000, (err) => {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+      console.log("Server is running on port 3000");
+    });
+  } catch (error) {
+    console.error("Error starting the application:", error);
     process.exit(1);
   }
-  console.log(`Server listening at ${address}`);
-});
+}
+
+startApp();

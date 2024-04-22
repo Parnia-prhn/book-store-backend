@@ -19,14 +19,13 @@ async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
   }
 }
 
-async function createUser(req: Request, reply: Reply): Promise<void> {
+async function createUser(req: Request): Promise<IUser> {
   const { username, password, age, gender, favoriteGenre } = req.body;
 
   try {
     const existingUser: IUser | null = await User.findOne({ username });
     if (existingUser) {
-      reply.status(400).send({ error: "User already exists" });
-      return;
+      throw new Error("User already exists");
     }
 
     const newUser: IUser = new User({
@@ -39,9 +38,9 @@ async function createUser(req: Request, reply: Reply): Promise<void> {
 
     const savedUser: IUser = await newUser.save();
 
-    reply.send(savedUser);
+    return savedUser;
   } catch (err) {
-    reply.status(500).send({ error: "Internal server error" });
+    throw new Error("Internal server error");
   }
 }
 export { getUserAddedBooks, createUser };
