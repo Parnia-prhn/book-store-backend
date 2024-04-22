@@ -1,4 +1,4 @@
-import { Request, Reply } from "fastify";
+import { FastifyRequest as Request, FastifyReply as Reply } from "fastify";
 import { Book, IBook } from "../models/Book";
 import { User, IUser } from "../models/User";
 import { ShoppingCart, IShoppingCart } from "../models/ShoppingCart";
@@ -53,7 +53,7 @@ async function getBooksForCart(req: Request, reply: Reply): Promise<void> {
 
 async function addBookToCart(req: Request, reply: Reply): Promise<void> {
   const { userId } = req.params as { userId: string };
-  const { bookId, quantity } = req.body;
+  const { bookId, quantity } = req.body as any;
 
   try {
     let cart = await ShoppingCart.findOne({ user: userId });

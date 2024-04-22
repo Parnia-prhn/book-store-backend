@@ -1,4 +1,4 @@
-import { Request, Reply } from "fastify";
+import { FastifyRequest as Request, FastifyReply as Reply } from "fastify";
 import { Book, IBook } from "../models/Book";
 import { User, IUser } from "../models/User";
 
@@ -20,7 +20,7 @@ async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
 }
 
 async function createUser(req: Request): Promise<IUser> {
-  const { username, password, age, gender, favoriteGenre } = req.body;
+  const { username, password, age, gender, favoriteGenre } = req.body as any;
 
   try {
     const existingUser: IUser | null = await User.findOne({ username });

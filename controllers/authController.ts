@@ -1,11 +1,11 @@
-import { Request, Reply } from "fastify";
+import { FastifyRequest as Request, FastifyReply as Reply } from "fastify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User, IUser } from "../models/User";
 import { createUser } from "./userController";
 
 async function signUp(req: Request, reply: Reply) {
-  const { username, password, age, gender, favoriteGenre } = req.body;
+  const { username, password, age, gender, favoriteGenre } = req.body as IUser;
 
   try {
     const existingUser: IUser | null = await User.findOne({ username });
@@ -34,7 +34,7 @@ async function signUp(req: Request, reply: Reply) {
 }
 
 async function login(req: Request, reply: Reply) {
-  const { username, password } = req.body;
+  const { username, password } = req.body as any;
 
   try {
     const user: IUser | null = await User.findOne({ username });

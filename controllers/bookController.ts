@@ -1,4 +1,4 @@
-import { Request, Reply } from "fastify";
+import { FastifyRequest as Request, FastifyReply as Reply } from "fastify";
 import { Book, IBook } from "../models/Book";
 import { User } from "../models/User";
 
@@ -60,7 +60,7 @@ async function getBooksByFavoriteGenre(
 }
 
 async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
-  const { title } = req.query;
+  const { title } = req.query as any;
 
   try {
     const books: IBook[] = await Book.find({
@@ -75,7 +75,7 @@ async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
 
 async function createBook(req: Request, reply: Reply): Promise<void> {
   const { userId } = req.params as { userId: string };
-  const { title, author, genre, publisher, price } = req.body;
+  const { title, author, genre, publisher, price } = req.body as any;
 
   try {
     const newBook: IBook = new Book({
@@ -98,7 +98,7 @@ async function createBook(req: Request, reply: Reply): Promise<void> {
 async function updateBook(req: Request, reply: Reply): Promise<void> {
   const { userId } = req.params as { userId: string };
   const { bookId } = req.params as { bookId: string };
-  const { title, author, genre, publisher, price } = req.body;
+  const { title, author, genre, publisher, price } = req.body as any;
 
   try {
     const book: IBook | null = await Book.findById(bookId);
@@ -107,7 +107,7 @@ async function updateBook(req: Request, reply: Reply): Promise<void> {
       return;
     }
     if (book.userIdCreator.toString() !== userId) {
-      reply.status(405).send({ error: "your not alowed to edit this book" });
+      reply.status(405).send({ error: "your not allowed to edit this book" });
       return;
     }
     const updatedBook: IBook | null = await Book.findByIdAndUpdate(
@@ -137,7 +137,7 @@ async function deleteBook(req: Request, reply: Reply): Promise<void> {
       return;
     }
     if (book.userIdCreator.toString() !== userId) {
-      reply.status(405).send({ error: "your not alowed to delete this book" });
+      reply.status(405).send({ error: "your not allowed to delete this book" });
       return;
     }
 
