@@ -6,12 +6,14 @@ interface IUser extends Document {
   age: number;
   gender: string;
   favoriteGenre: string;
+  favoriteBooks: { bookId: string }[];
 }
 
 const userSchema = new Schema<IUser>({
   username: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -19,16 +21,28 @@ const userSchema = new Schema<IUser>({
   },
   age: {
     type: Number,
-    required: true,
+    required: false,
+    default: 1,
   },
   gender: {
     type: String,
-    required: true,
+    required: false,
+    default: "male",
   },
   favoriteGenre: {
     type: String,
-    required: true,
+    required: false,
+    default: " ",
   },
+  favoriteBooks: [
+    {
+      bookId: {
+        type: String,
+        required: false,
+        default: " ",
+      },
+    },
+  ],
 });
 
 const User = mongoose.model<IUser>("User", userSchema);

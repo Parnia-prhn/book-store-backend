@@ -19,8 +19,8 @@ async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
   }
 }
 
-async function createUser(req: Request): Promise<IUser> {
-  const { username, password, age, gender, favoriteGenre } = req.body as any;
+async function createUser(obj: IUser): Promise<IUser> {
+  const { username, password, age, gender, favoriteGenre, favoriteBooks } = obj;
 
   try {
     const existingUser: IUser | null = await User.findOne({ username });
@@ -34,6 +34,7 @@ async function createUser(req: Request): Promise<IUser> {
       age,
       gender,
       favoriteGenre,
+      favoriteBooks,
     });
 
     const savedUser: IUser = await newUser.save();
@@ -43,4 +44,22 @@ async function createUser(req: Request): Promise<IUser> {
     throw new Error("Internal server error");
   }
 }
-export { getUserAddedBooks, createUser };
+
+async function addFavoriteBooks(req: Request, reply: Reply): Promise<void> {
+  const userId = req.params as { userId: string };
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      reply.status(404).send({ error: " User not found " });
+      return;
+    }
+
+    const bookIdToAdd = req.body as { bookIdToAdd: string };
+    const updatedUser = await user.save();
+    reply.send(updatedUser);
+  } catch (err) {
+    reply.status(500).send({ error: "Internal server error" });
+  }
+}
+export { getUserAddedBooks, createUser, addFavoriteBooks };

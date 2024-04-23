@@ -58,6 +58,32 @@ async function getBooksByFavoriteGenre(
     reply.status(500).send({ error: "Internal server error" });
   }
 }
+async function getFavoriteBooks(req: Request, reply: Reply): Promise<void> {
+  const userId = req.params as { userId: string };
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      reply.status(404).send({ error: " User not found " });
+      return;
+    }
+    const bookIds: string[] = [];
+    user.favoriteBooks.forEach((item) => {
+      bookIds.push(item.bookId.toString());
+    });
+
+    if (bookIds.length === 0) {
+      reply
+        .status(400)
+        .send({ error: " Favorite books not specified for the user " });
+    }
+
+    const books: IBook[] = await Book.find({ _id: { $in: bookIds } });
+    reply.send(books);
+  } catch (err) {
+    reply.status(500).send({ error: "Internal server error" });
+  }
+}
 
 async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
   const { title } = req.query as any;
@@ -153,6 +179,7 @@ export {
   getAllBooks,
   getBookByGenre,
   getBooksByFavoriteGenre,
+  getFavoriteBooks,
   searchBooksByTitle,
   createBook,
   updateBook,

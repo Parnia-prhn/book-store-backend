@@ -3,6 +3,7 @@ import {
   getAllBooks,
   getBookByGenre,
   getBooksByFavoriteGenre,
+  getFavoriteBooks,
   searchBooksByTitle,
   createBook,
   updateBook,
@@ -15,6 +16,8 @@ async function bookRoutes(fastify: FastifyInstance) {
   fastify.get("/books/genre/:genre", getBookByGenre);
 
   fastify.get("/books/favoriteGenre/:userId", getBooksByFavoriteGenre);
+
+  fastify.get("/books/favoriteBooks/:userId", getFavoriteBooks);
 
   fastify.get("/books/search", searchBooksByTitle);
 

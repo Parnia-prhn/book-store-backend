@@ -1,4 +1,5 @@
-import fastify, {
+import {
+  fastify,
   FastifyInstance,
   FastifyRequest,
   FastifyReply,

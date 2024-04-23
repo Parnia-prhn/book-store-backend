@@ -5,8 +5,9 @@ import { User, IUser } from "../models/User";
 import { createUser } from "./userController";
 
 async function signUp(req: Request, reply: Reply) {
-  const { username, password, age, gender, favoriteGenre } = req.body as IUser;
+  const obj = req.body as IUser;
 
+  const { username, password, age, gender, favoriteGenre, favoriteBooks } = obj;
   try {
     const existingUser: IUser | null = await User.findOne({ username });
 
@@ -18,13 +19,7 @@ async function signUp(req: Request, reply: Reply) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser: IUser = await createUser({
-      username,
-      password: hashedPassword,
-      age,
-      gender,
-      favoriteGenre,
-    });
+    const newUser: IUser = await createUser(obj);
 
     reply.send(newUser);
   } catch (error) {
