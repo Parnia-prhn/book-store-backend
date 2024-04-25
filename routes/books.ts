@@ -25,7 +25,7 @@ async function bookRoutes(fastify: FastifyInstance) {
 
   fastify.put("/books/update/:userId/:bookId", updateBook);
 
-  fastify.delete("books/delete/:userId/:bookId", deleteBook);
+  fastify.delete("/books/delete/:userId/:bookId", deleteBook);
 }
 
 export default bookRoutes;
