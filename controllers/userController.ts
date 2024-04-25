@@ -20,8 +20,13 @@ async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
 }
 
 async function createUser(obj: IUser): Promise<IUser> {
-  const { username, password, age, gender, favoriteGenre, favoriteBooks } = obj;
-
+  // const { username, password, age, gender, favoriteGenre, favoriteBooks } = obj;
+  const username = obj.username;
+  const password = obj.password;
+  const age = obj.age;
+  const gender = obj.gender;
+  const favoriteGenre = obj.favoriteGenre;
+  const favoriteBooks = obj.favoriteBooks;
   try {
     const existingUser: IUser | null = await User.findOne({ username });
     if (existingUser) {

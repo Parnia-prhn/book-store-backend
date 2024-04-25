@@ -101,7 +101,7 @@ async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
 
 async function createBook(req: Request, reply: Reply): Promise<void> {
   const { userId } = req.params as { userId: string };
-  const { title, author, genre, publisher, price } = req.body as any;
+  const { title, author, genre, publisher, price } = req.body as IBook;
 
   try {
     const newBook: IBook = new Book({

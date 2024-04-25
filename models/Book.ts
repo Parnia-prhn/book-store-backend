@@ -6,7 +6,7 @@ interface IBook extends Document {
   genre: string;
   publisher: string;
   price: number;
-  userIdCreator: mongoose.Types.ObjectId;
+  userIdCreator: string;
 }
 
 const bookSchema = new Schema<IBook>({
@@ -20,18 +20,20 @@ const bookSchema = new Schema<IBook>({
   },
   genre: {
     type: String,
-    required: true,
+    required: false,
+    default: " ",
   },
   publisher: {
     type: String,
-    required: true,
+    required: false,
+    default: " ",
   },
   price: {
     type: Number,
     required: true,
   },
   userIdCreator: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: "User",
     required: true,
   },
