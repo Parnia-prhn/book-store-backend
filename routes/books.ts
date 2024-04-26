@@ -19,7 +19,7 @@ async function bookRoutes(fastify: FastifyInstance) {
 
   fastify.get("/books/favoriteBooks/:userId", getFavoriteBooks);
 
-  fastify.get("/books/search", searchBooksByTitle);
+  fastify.get("/books?title=book_title", searchBooksByTitle);
 
   fastify.post("/books/create/:userId", createBook);
 

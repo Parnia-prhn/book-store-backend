@@ -31,7 +31,12 @@ async function getMostSoldBooks(req: Request, reply: Reply): Promise<void> {
 }
 
 async function getBooksForCart(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  // const { userId } = req.params as { userId: string };
 
   try {
     const cart = await ShoppingCart.findOne({ user: userId });
@@ -52,7 +57,12 @@ async function getBooksForCart(req: Request, reply: Reply): Promise<void> {
 }
 
 async function addBookToCart(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  // const { userId } = req.params as { userId: string };
   const { bookId, quantity } = req.body as any;
 
   try {
@@ -84,7 +94,12 @@ async function addBookToCart(req: Request, reply: Reply): Promise<void> {
 }
 
 async function getBoughtBooks(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  // const { userId } = req.params as { userId: string };
 
   try {
     const carts: IShoppingCart[] = await ShoppingCart.find({ user: userId });

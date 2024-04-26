@@ -34,8 +34,8 @@ const bookSchema = new Schema<IBook>({
   },
   userIdCreator: {
     type: String,
-    ref: "User",
-    required: true,
+    required: false,
+    default: " ",
   },
 });
 const Book = mongoose.model<IBook>("Book", bookSchema);

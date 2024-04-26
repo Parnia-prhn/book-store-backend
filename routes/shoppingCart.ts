@@ -13,7 +13,7 @@ async function shoppingCartRoutes(fastify: FastifyInstance) {
 
   fastify.get("/shoppingCart/cart/:userId", getBooksForCart);
 
-  fastify.post("/shoppingCart/addToCart/:userId/:bookId", addBookToCart);
+  fastify.post("/shoppingCart/addToCart/:userId", addBookToCart);
 }
 
 export default shoppingCartRoutes;

@@ -12,7 +12,11 @@ async function getAllBooks(req: Request, reply: Reply): Promise<void> {
 }
 
 async function getBookByGenre(req: Request, reply: Reply): Promise<void> {
-  const { genre } = req.params as { genre: string };
+  interface ParamsType {
+    genre?: string;
+  }
+  const params = req.params as ParamsType;
+  const genre = params.genre;
   try {
     const books: IBook[] = await Book.find({ genre: genre });
 
@@ -32,7 +36,11 @@ async function getBooksByFavoriteGenre(
   req: Request,
   reply: Reply
 ): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
 
   try {
     const user = await User.findById(userId);
@@ -44,7 +52,7 @@ async function getBooksByFavoriteGenre(
 
     const favoriteGenre = user.favoriteGenre;
 
-    if (!favoriteGenre) {
+    if (!favoriteGenre || favoriteGenre == " ") {
       reply
         .status(400)
         .send({ error: "Favorite genre not specified for the user" });
@@ -59,7 +67,11 @@ async function getBooksByFavoriteGenre(
   }
 }
 async function getFavoriteBooks(req: Request, reply: Reply): Promise<void> {
-  const userId = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
   try {
     const user = await User.findById(userId);
 
@@ -86,21 +98,34 @@ async function getFavoriteBooks(req: Request, reply: Reply): Promise<void> {
 }
 
 async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
-  const { title } = req.query as any;
-
+  interface QueryType {
+    title?: string;
+  }
+  const query = req.query as QueryType;
+  const title = query.title ?? "";
+  console.log("Received title:", title);
   try {
+    const regex = new RegExp(title, "i");
+    console.log("Constructed regular expression:", regex);
     const books: IBook[] = await Book.find({
-      title: { $regex: new RegExp(title, "i") },
+      title: { $regex: regex },
     });
+    console.log("Books found:", books);
+   
 
     reply.send(books);
   } catch (err) {
+    console.error("Error searching books by title:", err);
     reply.status(500).send({ error: "Internal server error" });
   }
 }
 
 async function createBook(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userIdCreator = params.userId;
   const { title, author, genre, publisher, price } = req.body as IBook;
 
   try {
@@ -110,11 +135,9 @@ async function createBook(req: Request, reply: Reply): Promise<void> {
       genre,
       publisher,
       price,
-      userId,
+      userIdCreator,
     });
-
     const savedBook: IBook = await newBook.save();
-
     reply.send(savedBook);
   } catch (err) {
     reply.status(500).send({ error: "Internal server error" });
@@ -122,8 +145,14 @@ async function createBook(req: Request, reply: Reply): Promise<void> {
 }
 
 async function updateBook(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
-  const { bookId } = req.params as { bookId: string };
+  interface ParamsType {
+    userId?: string;
+    bookId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  const bookId = params.bookId;
+
   const { title, author, genre, publisher, price } = req.body as any;
 
   try {
@@ -141,10 +170,7 @@ async function updateBook(req: Request, reply: Reply): Promise<void> {
       { title, author, genre, publisher, price, userId },
       { new: true }
     );
-    // if (!updatedBook) {
-    //   reply.status(404).send({ error: "Book not found" });
-    //   return;
-    // }
+
 
     reply.send(updatedBook);
   } catch (err) {
@@ -153,8 +179,14 @@ async function updateBook(req: Request, reply: Reply): Promise<void> {
 }
 
 async function deleteBook(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
-  const { bookId } = req.params as { bookId: string };
+  interface ParamsType {
+    userId?: string;
+    bookId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  const bookId = params.bookId;
+
 
   try {
     const book: IBook | null = await Book.findById(bookId);

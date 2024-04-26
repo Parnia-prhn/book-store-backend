@@ -3,7 +3,12 @@ import { Book, IBook } from "../models/Book";
 import { User, IUser } from "../models/User";
 
 async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
-  const { userId } = req.params as { userId: string };
+  interface ParamsType {
+    userId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  // const { userId } = req.params as { userId: string };
 
   try {
     const addedBooks: IBook[] = await Book.find({ userIdCreator: userId });
@@ -51,16 +56,31 @@ async function createUser(obj: IUser): Promise<IUser> {
 }
 
 async function addFavoriteBooks(req: Request, reply: Reply): Promise<void> {
-  const userId = req.params as { userId: string };
-
+  interface ParamsType {
+    userId?: string;
+    bookId?: string;
+  }
+  const params = req.params as ParamsType;
+  const userId = params.userId;
+  const bookIdToAdd = params.bookId;
+  if (!bookIdToAdd) {
+    reply.status(400).send({ error: "Book ID is missing from the request" });
+    return;
+  }
   try {
     const user = await User.findById(userId);
     if (!user) {
       reply.status(404).send({ error: " User not found " });
       return;
     }
+    const bookObject = { bookId: bookIdToAdd };
 
-    const bookIdToAdd = req.body as { bookIdToAdd: string };
+    if (user.favoriteBooks.includes(bookObject)) {
+      reply.send({ message: "Book already exists in user's favorite list" });
+      return;
+    }
+    user.favoriteBooks.push(bookObject);
+
     const updatedUser = await user.save();
     reply.send(updatedUser);
   } catch (err) {
