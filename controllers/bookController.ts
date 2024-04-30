@@ -111,7 +111,6 @@ async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
       title: { $regex: regex },
     });
     console.log("Books found:", books);
-   
 
     reply.send(books);
   } catch (err) {
@@ -126,10 +125,11 @@ async function createBook(req: Request, reply: Reply): Promise<void> {
   }
   const params = req.params as ParamsType;
   const userIdCreator = params.userId;
-  const { title, author, genre, publisher, price } = req.body as IBook;
+  const { image, title, author, genre, publisher, price } = req.body as IBook;
 
   try {
     const newBook: IBook = new Book({
+      image,
       title,
       author,
       genre,
@@ -153,7 +153,7 @@ async function updateBook(req: Request, reply: Reply): Promise<void> {
   const userId = params.userId;
   const bookId = params.bookId;
 
-  const { title, author, genre, publisher, price } = req.body as any;
+  const { image, title, author, genre, publisher, price } = req.body as any;
 
   try {
     const book: IBook | null = await Book.findById(bookId);
@@ -167,10 +167,9 @@ async function updateBook(req: Request, reply: Reply): Promise<void> {
     }
     const updatedBook: IBook | null = await Book.findByIdAndUpdate(
       bookId,
-      { title, author, genre, publisher, price, userId },
+      { image, title, author, genre, publisher, price, userId },
       { new: true }
     );
-
 
     reply.send(updatedBook);
   } catch (err) {
@@ -186,7 +185,6 @@ async function deleteBook(req: Request, reply: Reply): Promise<void> {
   const params = req.params as ParamsType;
   const userId = params.userId;
   const bookId = params.bookId;
-
 
   try {
     const book: IBook | null = await Book.findById(bookId);

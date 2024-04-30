@@ -49,7 +49,7 @@ async function login(req: Request, reply: Reply) {
       expiresIn: "1h",
     });
 
-    reply.send({ token });
+    reply.send({ token, user });
   } catch (error) {
     console.error(error);
     reply.status(500).send({ error: "Internal server error" });

@@ -8,7 +8,7 @@ import {
 
 async function shoppingCartRoutes(fastify: FastifyInstance) {
   fastify.get("/shoppingCart/mostSold", getMostSoldBooks);
-
+ 
   fastify.get("/shoppingCart/allBought/:userId", getBoughtBooks);
 
   fastify.get("/shoppingCart/cart/:userId", getBooksForCart);
@@ -16,4 +16,4 @@ async function shoppingCartRoutes(fastify: FastifyInstance) {
   fastify.post("/shoppingCart/addToCart/:userId", addBookToCart);
 }
 
-export default shoppingCartRoutes;
+export default shoppingCartRoutes; 

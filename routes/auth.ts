@@ -7,4 +7,4 @@ async function authRoutes(fastify: FastifyInstance) {
   fastify.post("/login", login);
 }
 
-export default authRoutes;
+export default authRoutes; 

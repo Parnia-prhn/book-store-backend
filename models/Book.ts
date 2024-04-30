@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface IBook extends Document {
+  image: string;
   title: string;
   author: string;
   genre: string;
@@ -10,6 +11,9 @@ interface IBook extends Document {
 }
 
 const bookSchema = new Schema<IBook>({
+  image: {
+    type: String,
+  },
   title: {
     type: String,
     required: true,
