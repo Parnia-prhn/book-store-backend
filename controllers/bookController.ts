@@ -10,6 +10,19 @@ async function getAllBooks(req: Request, reply: Reply): Promise<void> {
     reply.status(500).send({ error: "Internal server error" });
   }
 }
+async function getBookInformation(req: Request, reply: Reply): Promise<void> {
+  interface ParamsType {
+    bookId?: string;
+  }
+  const params = req.params as ParamsType;
+  const bookId = params.bookId;
+  try {
+    const book: IBook | null = await Book.findById(bookId);
+    reply.send(book);
+  } catch (err) {
+    reply.status(500).send({ error: "Internal server error" });
+  }
+}
 
 async function getBookByGenre(req: Request, reply: Reply): Promise<void> {
   interface ParamsType {
@@ -214,4 +227,5 @@ export {
   createBook,
   updateBook,
   deleteBook,
+  getBookInformation,
 };

@@ -8,10 +8,13 @@ import {
   createBook,
   updateBook,
   deleteBook,
+  getBookInformation,
 } from "../controllers/bookController";
 
 async function bookRoutes(fastify: FastifyInstance) {
   fastify.get("/books", getAllBooks);
+
+  fastify.get("/books/:bookId", getBookInformation);
 
   fastify.get("/books/genre/:genre", getBookByGenre);
 
