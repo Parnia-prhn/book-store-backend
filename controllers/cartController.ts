@@ -19,7 +19,7 @@ async function getMostSoldBooks(req: Request, reply: Reply): Promise<void> {
 
     const mostSoldBooksDetails = await Promise.all(
       mostSoldBooks.map(async (item: any) => {
-        const book = await Book.findById(item._id);
+        const book = await Book.find({ _id: item._id, isDeleted: false });
         return { book, totalQuantity: item.totalQuantity };
       })
     );
@@ -48,7 +48,10 @@ async function getBooksForCart(req: Request, reply: Reply): Promise<void> {
 
     const bookIds = cart.books.map((item) => item.bookId);
 
-    const books: IBook[] = await Book.find({ _id: { $in: bookIds } });
+    const books: IBook[] = await Book.find({
+      _id: { $in: bookIds },
+      isDeleted: false,
+    });
 
     reply.send(books);
   } catch (error) {
@@ -59,11 +62,14 @@ async function getBooksForCart(req: Request, reply: Reply): Promise<void> {
 async function addBookToCart(req: Request, reply: Reply): Promise<void> {
   interface ParamsType {
     userId?: string;
+    bookId?: string | any;
   }
   const params = req.params as ParamsType;
   const userId = params.userId;
+  const bookId = params.bookId;
+  const quantity = 1;
   // const { userId } = req.params as { userId: string };
-  const { bookId, quantity } = req.body as any;
+  // const { bookId, quantity } = req.body as any;
 
   try {
     let cart = await ShoppingCart.findOne({ user: userId });
@@ -111,7 +117,10 @@ async function getBoughtBooks(req: Request, reply: Reply): Promise<void> {
       });
     });
 
-    const books: IBook[] = await Book.find({ _id: { $in: bookIds } });
+    const books: IBook[] = await Book.find({
+      _id: { $in: bookIds },
+      isDeleted: false,
+    });
 
     reply.send(books);
   } catch (error) {

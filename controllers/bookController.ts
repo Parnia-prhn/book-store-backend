@@ -4,7 +4,7 @@ import { User } from "../models/User";
 
 async function getAllBooks(req: Request, reply: Reply): Promise<void> {
   try {
-    const books: IBook[] = await Book.find();
+    const books: IBook[] = await Book.find({ isDeleted: false });
     reply.send(books);
   } catch (err) {
     reply.status(500).send({ error: "Internal server error" });
@@ -31,7 +31,7 @@ async function getBookByGenre(req: Request, reply: Reply): Promise<void> {
   const params = req.params as ParamsType;
   const genre = params.genre;
   try {
-    const books: IBook[] = await Book.find({ genre: genre });
+    const books: IBook[] = await Book.find({ genre: genre, isDeleted: false });
 
     if (!books || books.length === 0) {
       reply
@@ -72,7 +72,10 @@ async function getBooksByFavoriteGenre(
       return;
     }
 
-    const books: IBook[] = await Book.find({ genre: favoriteGenre });
+    const books: IBook[] = await Book.find({
+      genre: favoriteGenre,
+      isDeleted: false,
+    });
 
     reply.send(books);
   } catch (err) {
@@ -87,7 +90,6 @@ async function getFavoriteBooks(req: Request, reply: Reply): Promise<void> {
   const userId = params.userId;
   try {
     const user = await User.findById(userId);
-
     if (!user) {
       reply.status(404).send({ error: " User not found " });
       return;
@@ -103,7 +105,10 @@ async function getFavoriteBooks(req: Request, reply: Reply): Promise<void> {
         .send({ error: " Favorite books not specified for the user " });
     }
 
-    const books: IBook[] = await Book.find({ _id: { $in: bookIds } });
+    const books: IBook[] = await Book.find({
+      _id: { $in: bookIds },
+      isDeleted: false,
+    });
     reply.send(books);
   } catch (err) {
     reply.status(500).send({ error: "Internal server error" });
@@ -122,7 +127,9 @@ async function searchBooksByTitle(req: Request, reply: Reply): Promise<void> {
     console.log("Constructed regular expression:", regex);
     const books: IBook[] = await Book.find({
       title: { $regex: regex },
+      isDeleted: false,
     });
+
     console.log("Books found:", books);
 
     reply.send(books);
@@ -210,7 +217,9 @@ async function deleteBook(req: Request, reply: Reply): Promise<void> {
       return;
     }
 
-    const deletedBook = await Book.findByIdAndDelete(bookId);
+    const deletedBook: IBook | null = await Book.findByIdAndUpdate(bookId, {
+      isDeleted: true,
+    });
 
     reply.send({ message: "Book deleted successfully" });
   } catch (err) {

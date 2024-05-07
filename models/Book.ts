@@ -8,6 +8,7 @@ interface IBook extends Document {
   publisher: string;
   price: number;
   userIdCreator: string;
+  isDeleted: boolean;
 }
 
 const bookSchema = new Schema<IBook>({
@@ -40,6 +41,11 @@ const bookSchema = new Schema<IBook>({
     type: String,
     required: false,
     default: " ",
+  },
+  isDeleted: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 const Book = mongoose.model<IBook>("Book", bookSchema);

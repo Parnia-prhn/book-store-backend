@@ -11,7 +11,10 @@ async function getUserAddedBooks(req: Request, reply: Reply): Promise<void> {
   // const { userId } = req.params as { userId: string };
 
   try {
-    const addedBooks: IBook[] = await Book.find({ userIdCreator: userId });
+    const addedBooks: IBook[] = await Book.find({
+      userIdCreator: userId,
+      isDeleted: false,
+    });
 
     if (addedBooks.length === 0) {
       reply.status(404).send({ error: "No books added by the user found" });
